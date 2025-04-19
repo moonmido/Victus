@@ -1,14 +1,42 @@
-import { View, Text, SafeAreaView, TouchableOpacity, StyleSheet, Dimensions, TextInput } from 'react-native'
+import { View, Text, SafeAreaView, TouchableOpacity, StyleSheet, Dimensions, TextInput, Alert } from 'react-native'
 import React, { useState } from 'react'
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { StatusBar } from 'expo-status-bar';
 import { ScrollView } from 'react-native';
+import { CalculatCalories } from '../AiConfig/Config';
+import PromptAi from '../AiConfig/PromptAi';
 
 const {width,height} = Dimensions.get("window");
 
 
 const Home = () => {
+
+
+
+  const handleCalculatWithAi = async () => {
+    const data = {
+      gender: gender,
+      weight: weight + selectedTypeWeight,
+      height: Height + selectedTypeHeight, 
+      age: age,
+      goal: goal,
+    };
+  
+    const prompt = JSON.stringify(data) + "\n\n" + PromptAi.CALCULAT_PROMPT;
+  
+    try {
+      const result = await CalculatCalories(prompt);
+      const response = result.choices[0].message.content;
+      const JsonResponse = JSON.parse(response);
+      console.log(response);
+      Alert.alert("Calories = "+JsonResponse.calories+" kcal "+" Carbs :"+JsonResponse.carbs+" g")
+    } catch (error) {
+      console.error("AI calculation error:", error);
+    }
+  };
+  
+
 
 const [weight,setWeight] =useState('');
 const [selectedTypeWeight,setSelectedTypeWeight] =useState('');
@@ -19,7 +47,7 @@ const [goal,setGoal] =useState('');
 const [gender,setGender] = useState('');
   return (
 <ScrollView style={styles.container} showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom:100}}>
-<View style={{marginLeft:width*0.1,marginTop:height*0.05}}>
+<View style={{marginLeft:width*0.1,marginTop:height*0.07}}>
 
 <View style={{display:"flex",flexDirection:"row",justifyContent:"space-between",alignItems:"center"}}>
 
@@ -94,7 +122,7 @@ const [gender,setGender] = useState('');
 <Text style={{color:"#c2cbcc"}}>Goal</Text>
 
 <View style={{marginTop:height*0.015,display:"flex",flexDirection:"row"}}>
-<TextInput onChangeText={(e)=>setGoal(e)} keyboardType='numeric' placeholder='Loose weight ...' placeholderTextColor={"gray"} style={{backgroundColor:"white",width:width*0.8,borderRadius:10,paddingHorizontal:10,fontWeight:"500",color:"black"}}/>
+<TextInput onChangeText={(e)=>setGoal(e)} keyboardType='default' placeholder='Loose weight ...' placeholderTextColor={"gray"} style={{backgroundColor:"white",width:width*0.8,borderRadius:10,paddingHorizontal:10,fontWeight:"500",color:"black"}}/>
 
 </View>
 
@@ -108,7 +136,7 @@ const [gender,setGender] = useState('');
 
 
 
-<TouchableOpacity style={{marginTop:height*0.05,backgroundColor:"#3ddbbd",width:width*0.8,borderRadius:10}}>
+<TouchableOpacity style={{marginTop:height*0.05,backgroundColor:"#3ddbbd",width:width*0.8,borderRadius:10}} onPress={handleCalculatWithAi}>
     <Text style={{padding:height*0.02,textAlign:"center",fontWeight:"700",fontSize:17}}>Continue</Text>
 </TouchableOpacity>
 
