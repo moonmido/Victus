@@ -1,23 +1,20 @@
 const PromptAi = {
-    CALCULAT_PROMPT: `Calculate daily caloric and protein needs according to the goal ( gain weight, loose weight ...ect).
-  
-  Input:
-  - weight 
-  - height 
-  - age (years)
-  - gender (male or female)
-  - goal (lose, maintain, gain)
-    
-  Return only JSON in this schema:
-  { "calories": <number>, "proteins": <number> , "carbs":<number>}
-  
+    CALCULAT_PROMPT: `Calculate daily caloric and macronutrient needs based on:
+- weight 
+- height 
+- age (in years)
+- gender (male or female)
+- goal (lose, maintain, gain)
+- Activity (Sendentary, Light, Moderate, Active, Extra Active)
 
-  Example input:
-  weight: 80
-  height: 180
-  age: 28
-  gender: male
-  goal: gain`
+Return only JSON in this schema:
+{
+  "energy": <number>,     // energy consumption
+"water": <number>,      // Daily water intake in liters (e.g. 2.5)
+  "protein": <number>,         // Protein
+  "carbs": <number>,          // Carbs
+  "fat": <number>,            // fat
+}`
   };
   
   export default PromptAi;

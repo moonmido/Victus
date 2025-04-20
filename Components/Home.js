@@ -6,35 +6,35 @@ import { StatusBar } from 'expo-status-bar';
 import { ScrollView } from 'react-native';
 import { CalculatCalories } from '../AiConfig/Config';
 import PromptAi from '../AiConfig/PromptAi';
+import { useNavigation } from '@react-navigation/native';
+import TopBar from './TopBar';
+import Button from './Button';
 
 const {width,height} = Dimensions.get("window");
 
 
 const Home = () => {
 
+const navigation = useNavigation();
 
 
-  const handleCalculatWithAi = async () => {
-    const data = {
-      gender: gender,
-      weight: weight + selectedTypeWeight,
-      height: Height + selectedTypeHeight, 
-      age: age,
-      goal: goal,
-    };
-  
-    const prompt = JSON.stringify(data) + "\n\n" + PromptAi.CALCULAT_PROMPT;
-  
-    try {
-      const result = await CalculatCalories(prompt);
-      const response = result.choices[0].message.content;
-      const JsonResponse = JSON.parse(response);
-      console.log(response);
-      Alert.alert("Calories = "+JsonResponse.calories+" kcal "+" Carbs :"+JsonResponse.carbs+" g")
-    } catch (error) {
-      console.error("AI calculation error:", error);
-    }
-  };
+
+const handleNavigation=()=>{
+if(Height.length<1 || weight.length<1 ||goal.length<1 || age.length <1 ||gender.length<1 || selectedTypeHeight.length <1 ||selectedTypeWeight.length <1){
+  Alert.alert("Please Fill all Fields")
+}else navigation.navigate("activity",{
+  hei:Height,
+  typehei:selectedTypeHeight,
+  wei:weight,
+  typewei:selectedTypeWeight,
+  age:age,
+  gen:gender,
+  goal:goal
+});
+
+}
+
+
   
 
 
@@ -49,18 +49,7 @@ const [gender,setGender] = useState('');
 <ScrollView style={styles.container} showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom:100}}>
 <View style={{marginLeft:width*0.1,marginTop:height*0.07}}>
 
-<View style={{display:"flex",flexDirection:"row",justifyContent:"space-between",alignItems:"center"}}>
-
-<TouchableOpacity>
-<FontAwesome5 name="bars" size={30} color="#3ddbbd" />
-</TouchableOpacity>
-
-<TouchableOpacity style={{marginRight:width*0.1}}>
-<AntDesign name="questioncircle" size={30} color="#3ddbbd" />
-</TouchableOpacity>
-
-</View>
-
+<TopBar />
 <View style={{marginTop:height*0.05}}>
     <Text style={{color:"white",fontWeight:"700",fontSize:23}}>Calorie Calculator</Text>
 
@@ -136,10 +125,7 @@ const [gender,setGender] = useState('');
 
 
 
-<TouchableOpacity style={{marginTop:height*0.05,backgroundColor:"#3ddbbd",width:width*0.8,borderRadius:10}} onPress={handleCalculatWithAi}>
-    <Text style={{padding:height*0.02,textAlign:"center",fontWeight:"700",fontSize:17}}>Continue</Text>
-</TouchableOpacity>
-
+<Button handle={handleNavigation}/>
 
 
 </View>
