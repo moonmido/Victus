@@ -125,7 +125,7 @@ const [gender,setGender] = useState('');
 
 
 
-<Button handle={handleNavigation}/>
+<Button handle={handleNavigation} title={"Continue"}/>
 
 
 </View>

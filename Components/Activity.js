@@ -5,11 +5,13 @@ import DATA from '../ActivityData/AData';
 import Button from './Button';
 import PromptAi from '../AiConfig/PromptAi';
 import { CalculatCalories } from '../AiConfig/Config';
+import { useNavigation } from '@react-navigation/native';
 
 
 const {width,height} = Dimensions.get("window");
 
 const Activity = ({hei,wei,age,gen,goal,typewei,typehei}) => {
+  const navigation = useNavigation();
 
     const [activity,setActivity] = useState('');
     const [selected,isSelected] = useState(false);
@@ -34,17 +36,23 @@ const Activity = ({hei,wei,age,gen,goal,typewei,typehei}) => {
           goal: goal,
           activity:activity
         };
-      
+        console.log("hey")
 
 
         const prompt = JSON.stringify(data) + "\n\n" + PromptAi.CALCULAT_PROMPT;
-      console.log("hey")
         try {
           const result = await CalculatCalories(prompt);
           const response = result.choices[0].message.content;
           const JsonResponse = JSON.parse(response);
           console.log(response);
-          Alert.alert("energy consumption = "+JsonResponse.energy+" kcal "+" water :"+JsonResponse.water+" l")
+navigation.navigate("result",{
+energy:JsonResponse.energy,
+water:JsonResponse.water,
+protein:JsonResponse.protein,
+carbs:JsonResponse.carbs,
+fat:JsonResponse.fat
+})
+          
         } catch (error) {
           console.error("AI calculation error:", error);
         }
@@ -80,7 +88,7 @@ return(
 </View>
 )})
 }
-<Button handle={handleCalculatWithAi}/>
+<Button handle={handleCalculatWithAi} title={"Calculate"}/>
 
 </View>
 
